@@ -57,4 +57,34 @@ def return_C(mol_file, MOL):
     Cijk = np.zeros([nat, nb])
     for i in np.arange(nat):
         for j in np.arange(nb):
+            val = 0
+            if i == bonds[j][0]:
+                val =-1
+            elif i == bonds[j][1]:
+                val =1
+            else:
+                pass
+            Cijk[i][j] = val
+
+    return Cijk, charges, bonds
+
+def return_bjk(Cijk, charges):
+    ## solve for bjk using SVD
+    U, S, Vt = np.linalg.svd(Cijk, full_matrices = False)
+
+    Sinv = (np.diag(1/S)).T
+    Cinv = np.matmul(Vt.T, np.matmul(Sinv,U.T))
+
+    b = np.matmul(Cinv, charges)
+
+    q_comp = np.matmul(Cijk, b)
+
+    err = np.sum(np.abs(charges-q_comp))
+    return b, err
+
+def get_bjks(mol_file, MOL):
+    #print(mol_file)
+    Cijk, charges, _ = return_C(mol_file, MOL)
+    temp, err = return_bjk(Cijk, charges)
+    return temp
 "parsing_gmx.py" [dos] 90L, 2705C                                                                                    52,0-1        Top
