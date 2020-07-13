@@ -187,3 +187,9 @@ def thickness_finder(ezz, zz, nbins, sym=True, nbspl=30):
     dh = abs(zgrid[idx22] - zgrid[idx21])
 
     return dh
+
+def slabcap(dh, epsr=2.0):
+    # compute slab-capacitance from thickness
+    eps0 = 0.8854
+    C = eps0*epsr / dh
+    print("Slab-capacitance =", C)
